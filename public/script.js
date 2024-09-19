@@ -8,6 +8,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeModal = document.getElementsByClassName('close')[0];
     const uploadForm = document.getElementById('uploadForm');
 
+    const mediaModal = document.getElementById('mediaModal');
+    const mediaContainer = document.getElementById('mediaContainer');
+    const mediaDescription = document.getElementById('mediaDescription');
+    const closeMedia = document.getElementById('closeMedia');
+
     uploadButton.onclick = () => {
         modal.style.display = 'block';
     };
@@ -16,9 +21,18 @@ document.addEventListener('DOMContentLoaded', () => {
         modal.style.display = 'none';
     };
 
+    closeMedia.onclick = () => {
+        mediaModal.style.display = 'none';
+        mediaContainer.innerHTML = ''; // Clear media content when closing
+    };
+
     window.onclick = (event) => {
         if (event.target === modal) {
             modal.style.display = 'none';
+        }
+        if (event.target === mediaModal) {
+            mediaModal.style.display = 'none';
+            mediaContainer.innerHTML = ''; // Clear media content when closing
         }
     };
 
@@ -98,22 +112,37 @@ function loadGallery(tab) {
 
             if (tab === 'Posts' && ['jpeg', 'jpg', 'png', 'gif', 'mp4', 'webm', 'ogg'].includes(ext)) {
                 if (['mp4', 'webm', 'ogg'].includes(ext)) {
-                    element = document.createElement('video');
-                    element.src = `/uploads/${file}`;
-                    element.controls = true; // Allow video playback controls
+                    element = document.createElement('div');
+                    const video = document.createElement('video');
+                    video.src = `/uploads/${file}`;
+                    video.loop = true; // Loop the video
+                    video.muted = true; // Mute the video
+                    video.classList.add('gallery-item');
+                    video.controls = true; // ADD VIDEO CONTROLS HERE
+
+                    element.appendChild(video);
+                    element.classList.add('gallery-item');
+                    element.onclick = () => openMedia(file); // Open media on click
+                    gallery.appendChild(element);
                 } else {
                     element = document.createElement('img');
                     element.src = `/uploads/${file}`;
+                    element.classList.add('gallery-item');
+                    element.onclick = () => openMedia(file); // Open media on click
+                    gallery.appendChild(element);
                 }
-                element.classList.add('gallery-item');
-                element.onclick = () => showDescription(file); // Show description on click
-                gallery.appendChild(element);
             } else if (tab === 'Reels' && ['mp4', 'webm', 'ogg'].includes(ext)) {
-                element = document.createElement('video');
-                element.src = `/uploads/${file}`;
-                element.controls = true; // Allow video playback controls
+                element = document.createElement('div');
+                const video = document.createElement('video');
+                video.src = `/uploads/${file}`;
+                video.loop = true; // Loop the video
+                video.muted = true; // Mute the video
+                video.classList.add('gallery-item');
+                video.controls = true; // ADD VIDEO CONTROLS HERE
+
+                element.appendChild(video);
                 element.classList.add('gallery-item');
-                element.onclick = () => showDescription(file); // Show description on click
+                element.onclick = () => openMedia(file); // Open media on click
                 gallery.appendChild(element);
             }
         });
@@ -121,13 +150,33 @@ function loadGallery(tab) {
     .catch(error => console.error('Error:', error));
 }
 
-function showDescription(file) {
+function openMedia(file) {
+    const ext = file.split('.').pop().toLowerCase();
+    const mediaContainer = document.getElementById('mediaContainer');
+    const mediaDescription = document.getElementById('mediaDescription');
+
+    mediaContainer.innerHTML = ''; // Clear previous content
+    mediaDescription.innerHTML = ''; // Clear previous description
+
+    if (['mp4', 'webm', 'ogg'].includes(ext)) {
+        const video = document.createElement('video');
+        video.src = `/uploads/${file}`;
+        video.controls = true; // ADD VIDEO CONTROLS HERE
+        video.autoplay = true; // Start playing automatically
+        video.loop = true; // Loop the video
+        mediaContainer.appendChild(video);
+    } else {
+        const img = document.createElement('img');
+        img.src = `/uploads/${file}`;
+        mediaContainer.appendChild(img);
+    }
+
+    // Fetch description
     fetch(`/description/${file}`)
     .then(response => response.json())
     .then(data => {
-        const descriptionBox = document.getElementById('description');
-        descriptionBox.innerText = data.description;
-        descriptionBox.style.display = 'block'; // Display the description box
+        mediaDescription.innerText = data.description;
+        mediaModal.style.display = 'block'; // Show the media modal
     })
     .catch(error => console.error('Error:', error));
 }
