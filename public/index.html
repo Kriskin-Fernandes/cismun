@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image and Video Gallery</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Upload and View Images and Videos</h1>
+    <button id="uploadButton">Upload</button>
+
+    <!-- Tabs for Posts and Reels -->
+    <div class="tab">
+        <button class="tablinks" onclick="openTab(event, 'Posts')">Posts</button>
+        <button class="tablinks" onclick="openTab(event, 'Reels')">Reels</button>
+    </div>
+
+    <div id="Posts" class="tabcontent">
+        <div id="postsGallery" class="gallery"></div>
+    </div>
+
+    <div id="Reels" class="tabcontent">
+        <div id="reelsGallery" class="gallery"></div>
+    </div>
+
+    <!-- Modal for upload -->
+    <div id="uploadModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <form id="uploadForm" enctype="multipart/form-data">
+                <input type="password" id="passwordInput" placeholder="Enter password" required>
+                <input type="file" name="file" accept="image/*,video/*" required>
+                <textarea id="descriptionInput" placeholder="Enter description and hashtags"></textarea>
+                <button type="submit">Upload</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
