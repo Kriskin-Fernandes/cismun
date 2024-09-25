@@ -14,7 +14,8 @@ const storage = multer.diskStorage({
         cb(null, 'uploads/');
     },
     filename: (req, file, cb) => {
-        cb(null, Date.now() + path.extname(file.originalname)); // Save with timestamp
+        const timestamp = Date.now();
+        cb(null, `${timestamp}_${file.originalname}`);
     }
 });
 
@@ -37,8 +38,22 @@ const upload = multer({
     fileFilter: fileFilter
 }).single('file');
 
-// Object to store descriptions
-const descriptions = {};
+// File to store descriptions
+const descriptionsFilePath = path.join(__dirname, 'descriptions.json');
+
+// Function to read descriptions from file
+const readDescriptions = () => {
+    if (fs.existsSync(descriptionsFilePath)) {
+        const data = fs.readFileSync(descriptionsFilePath);
+        return JSON.parse(data);
+    }
+    return {}; // Return an empty object if the file does not exist
+};
+
+// Function to write descriptions to file
+const writeDescriptions = (descriptions) => {
+    fs.writeFileSync(descriptionsFilePath, JSON.stringify(descriptions, null, 2));
+};
 
 // Home route
 app.get('/', (req, res) => {
@@ -51,11 +66,17 @@ app.post('/upload', (req, res) => {
         if (err) {
             return res.status(400).send(err);
         }
-        const description = req.body.description;
+        const description = req.body.description || ''; // Use empty string if description is undefined
         const filename = req.file.filename;
 
-        // Save description
+        // Read existing descriptions
+        const descriptions = readDescriptions();
+
+        // Save new description
         descriptions[filename] = description;
+
+        // Write updated descriptions back to the file
+        writeDescriptions(descriptions);
 
         res.json({ imageUrl: `/uploads/${filename}` });
     });
@@ -74,7 +95,8 @@ app.get('/uploads', (req, res) => {
 // API to get description for a specific file
 app.get('/description/:filename', (req, res) => {
     const filename = req.params.filename;
-    res.json({ description: descriptions[filename] || '' });
+    const descriptions = readDescriptions(); // Read descriptions from file
+    res.json({ description: descriptions[filename] || '' }); // Return description from file
 });
 
 // Start the server

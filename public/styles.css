@@ -38,14 +38,18 @@ form {
 }
 
 .gallery-item {
-    width: 300px; /* Fixed width for gallery items */
-    height: 300px; /* Fixed height for gallery items */
-    object-fit: cover; /* Ensures images fill the box */
-    margin: 5px; /* Margin between images */
-    border-radius: 0;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    cursor: pointer; /* Cursor pointer on hover */
+    width: 30%; /* One-third of the width of the gallery */
+    padding: 5px; /* Add some space around items */
     position: relative; /* Position for the play button */
+    overflow: hidden; /* Ensure overflow is hidden for square aspect ratio */
+}
+
+.gallery-item img,
+.gallery-item video {
+    width: 100%; /* Full width */
+    height: auto; /* Maintain aspect ratio */
+    aspect-ratio: 1 / 1; /* Force square aspect ratio */
+    object-fit: cover; /* Ensure images fill the box */
 }
 
 .play-button {
@@ -58,17 +62,30 @@ form {
     display: none; /* Hidden by default */
 }
 
-.gallery-item video {
-    width: 100%;
-    height: 100%;
-}
-
 #description {
     margin: 20px;
     background-color: #222; /* Dark background for the description box */
     color: #fff; /* White text color for description */
     padding: 10px;
     border-radius: 5px;
+}
+
+/* Profile picture styles */
+#profilePic {
+    width: 100px; /* Set the width of the profile picture */
+    height: 100px; /* Set the height of the profile picture */
+    border-radius: 50%; /* Make it circular */
+    margin: 20px 0; /* Add some margin above and below */
+    /* border: 2px solid #FFD700; */ /* Removed border */
+}
+
+a {
+    color: #FFD730; /* Light gold color */
+    text-decoration: none; /* Remove underline */
+}
+
+a:hover {
+    text-decoration: underline; /* Add underline on hover */
 }
 
 /* Modal styles */

@@ -180,3 +180,4 @@ function openMedia(file) {
     })
     .catch(error => console.error('Error:', error));
 }
+	
